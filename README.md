@@ -96,7 +96,7 @@ BEGIN
     // Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe
     CALL DatabaseModule.SaveDataToDatabase(StructuredData);
 END.
-
+---------------------------------------------------------------------------------------
 
 MODULE InitializeModules;
 BEGIN
@@ -142,7 +142,7 @@ BEGIN
 
     RETURN ExtractedText;
 END.
-------------------------------------------
+------------------------------------------------------------------------------------------------
 
 MODULE SelectData;
 VAR
@@ -154,7 +154,7 @@ BEGIN
     RETURN SelectedData;
 END.
 
---------------------------------
+--------------------------------------------------------------------------------------------
 
 MODULE ConvertToJsonOrCsv;
 VAR
@@ -166,7 +166,7 @@ BEGIN
     RETURN OutputFile;
 END.
 
-------------------------
+--------------------------------------------------------------
 MODULE ExportData;
 VAR
     OutputFile : FILE;
@@ -179,7 +179,7 @@ BEGIN
 END.
 
 
--------------------------------
+------------------------------------------------------------------
 
 MODULE SaveDataToDatabase;
 VAR
