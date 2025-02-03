@@ -57,6 +57,145 @@ Kaadoc/
 │-- README.md             # Documentation du projet
 ```
 
+
+
+# Architecture SNL de KaadocV1 - Extraction et Structuration de Données
+
+## Algorithme principal : `KaadocV1_Extraction_and_Structuration`
+
+### Variables
+- `InputFile` : Fichier à traiter
+- `ProcessedText` : Texte extrait du fichier
+- `StructuredData` : Données extraites et structurées
+- `DatabaseConnection` : Connexion à la base de données
+- `OutputFile` : Fichier de sortie (JSON, CSV)
+- `ConversionModule`, `ExtractionModule`, `ExportModule`, `DatabaseModule` : Modules utilisés dans le processus
+
+### Déroulement du processus
+
+```snl
+BEGIN
+    // Initialiser les modules nécessaires
+    CALL InitializeModules();
+
+    // Étape 1 : Télécharger le fichier via l'interface utilisateur
+    CALL UploadFile(InputFile);
+    
+    // Étape 2 : Extraire le texte du fichier via le module d'extraction
+    CALL ExtractionModule.ExtractText(InputFile, ProcessedText);
+
+    // Étape 3 : Sélectionner les informations spécifiques dans le texte extrait
+    CALL ExtractionModule.SelectData(ProcessedText, StructuredData);
+    
+    // Étape 4 : Convertir les données extraites en format JSON ou CSV
+    CALL ConversionModule.ConvertToJsonOrCsv(StructuredData, OutputFile);
+
+    // Étape 5 : Exporter les données dans une base de données ou fichier
+    CALL ExportModule.ExportData(OutputFile);
+    
+    // Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe
+    CALL DatabaseModule.SaveDataToDatabase(StructuredData);
+END.
+
+
+MODULE InitializeModules;
+BEGIN
+    // Initialisation des modules backend
+    ConversionModule := MODULE("Kaadoc.backend.convert");
+    ExtractionModule := MODULE("Kaadoc.backend.process");
+    ExportModule := MODULE("Kaadoc.backend.export");
+    DatabaseModule := MODULE("Kaadoc.database.db_connector");
+    
+    // Chargement des configurations
+    CALL LoadConfigurations("config/settings.py");
+    CALL LoadEnvironmentVariables(".env");
+END.
+
+
+---------------------------------------------------------------
+
+MODULE UploadFile;
+VAR
+    FilePath : STRING;
+BEGIN
+    // L'interface utilisateur permet à l'utilisateur de télécharger le fichier
+    CALL StreamlitInterface.UploadFile(FilePath);
+    RETURN FilePath;
+END.
+
+---------------------------------------------------------
+
+MODULE ExtractText;
+VAR
+    InputFile : FILE;
+    ExtractedText : TEXT;
+BEGIN
+    // Si le fichier est un PDF
+    IF FileType(InputFile) == "PDF" THEN
+        CALL TesseractOCR.ExtractFromPDF(InputFile, ExtractedText);
+    ENDIF;
+    
+    // Si le fichier est une image
+    IF FileType(InputFile) == "Image" THEN
+        CALL TesseractOCR.ExtractFromImage(InputFile, ExtractedText);
+    ENDIF;
+
+    RETURN ExtractedText;
+END.
+------------------------------------------
+
+MODULE SelectData;
+VAR
+    ExtractedText : TEXT;
+    SelectedData : TEXT;
+BEGIN
+    // Logique de sélection des informations pertinentes
+    CALL DataSelector.SelectFields(ExtractedText, SelectedData, Fields = ["CNI", "Factures", "CV"]);
+    RETURN SelectedData;
+END.
+
+--------------------------------
+
+MODULE ConvertToJsonOrCsv;
+VAR
+    StructuredData : TEXT;
+    OutputFile : FILE;
+BEGIN
+    // Conversion des données en JSON ou CSV
+    CALL LlamaIndex.ConvertData(StructuredData, Format = "JSON", OutputFile);
+    RETURN OutputFile;
+END.
+
+------------------------
+MODULE ExportData;
+VAR
+    OutputFile : FILE;
+BEGIN
+    // Option 1 : Exporter vers un fichier local
+    CALL FileExporter.SaveToFile(OutputFile, "data/output/");
+    
+    // Option 2 : Exporter vers une base de données externe
+    CALL DatabaseModule.SaveDataToDatabase(OutputFile);
+END.
+
+
+-------------------------------
+
+MODULE SaveDataToDatabase;
+VAR
+    StructuredData : TEXT;
+BEGIN
+    // Sauvegarde des données dans une base de données externe
+    IF DatabaseConnection IS PostgreSQL THEN
+        CALL PostgreSQL.SaveData(StructuredData, "table_name");
+    ELSE IF DatabaseConnection IS MongoDB THEN
+        CALL MongoDB.SaveData(StructuredData, "collection_name");
+    ENDIF;
+END.
+
+
+
+
 ---
 
 ## 🔥 Technologies Utilisées
@@ -85,15 +224,3 @@ Kaadoc/
    ```bash
    streamlit run main.py
    ```
-
-## 📌 Prochaines améliorations
-
-- Ajouter la prise en charge d'autres types de fichiers.
-- Intégration avec des **API externes** pour stockage et récupération automatique des données.
-
----
-
-📩 **Contact & Contributions**
-Les contributions sont les bienvenues ! Pour toute suggestion ou amélioration, n'hésitez pas à ouvrir une issue ou un pull request. 🚀
-
----
