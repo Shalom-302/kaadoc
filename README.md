@@ -71,7 +71,9 @@ Kaadoc/
 - `OutputFile` : Fichier de sortie (JSON, CSV)
 - `ConversionModule`, `ExtractionModule`, `ExportModule`, `DatabaseModule` : Modules utilisés dans le processus
 
-### Déroulement du processus
+# Architecture du Processus - SNL
+
+## Déroulement du processus
 
 ```snl
 BEGIN
@@ -82,49 +84,51 @@ BEGIN
     CALL UploadFile(InputFile);
     
     // Étape 2 : Extraire le texte du fichier via le module d'extraction
-    CALL ExtractionModule.ExtractText(InputFile, ProcessedText);
+    CALL ExtractText(InputFile, ExtractedText);
 
     // Étape 3 : Sélectionner les informations spécifiques dans le texte extrait
-    CALL ExtractionModule.SelectData(ProcessedText, StructuredData);
+    CALL SelectData(ExtractedText, SelectedData);
     
     // Étape 4 : Convertir les données extraites en format JSON ou CSV
-    CALL ConversionModule.ConvertToJsonOrCsv(StructuredData, OutputFile);
+    CALL ConvertToJsonOrCsv(SelectedData, OutputFile);
 
     // Étape 5 : Exporter les données dans une base de données ou fichier
-    CALL ExportModule.ExportData(OutputFile);
+    CALL ExportData(OutputFile);
     
     // Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe
-    CALL DatabaseModule.SaveDataToDatabase(StructuredData);
+    CALL SaveDataToDatabase(SelectedData);
 END.
----------------------------------------------------------------------------------------
 
+---------------------------------------------------------------------------------------
 MODULE InitializeModules;
 BEGIN
     // Initialisation des modules backend
-    ConversionModule := MODULE("Kaadoc.backend.convert");
-    ExtractionModule := MODULE("Kaadoc.backend.process");
-    ExportModule := MODULE("Kaadoc.backend.export");
-    DatabaseModule := MODULE("Kaadoc.database.db_connector");
+    ConversionModule := MODULE("Kaadoc.backend.convert"); // Fichier : `Kaadoc/backend/convert.py`
+    ExtractionModule := MODULE("Kaadoc.backend.process"); // Fichier : `Kaadoc/backend/process.py`
+    ExportModule := MODULE("Kaadoc.backend.export");     // Fichier : `Kaadoc/backend/export.py`
+    DatabaseModule := MODULE("Kaadoc.database.db_connector"); // Fichier : `Kaadoc/database/db_connector.py`
     
     // Chargement des configurations
-    CALL LoadConfigurations("config/settings.py");
-    CALL LoadEnvironmentVariables(".env");
+    CALL LoadConfigurations("Kaadoc/config/settings.py");      // Fichier : `Kaadoc/config/settings.py`
+    CALL LoadEnvironmentVariables("Kaadoc/config/.env");       // Fichier : `Kaadoc/config/.env`
 END.
 
 
----------------------------------------------------------------
 
+---------------------------------------------------------------
+**Étape 1 : Télécharger le fichier via l'interface utilisateur**
 MODULE UploadFile;
 VAR
     FilePath : STRING;
 BEGIN
     // L'interface utilisateur permet à l'utilisateur de télécharger le fichier
-    CALL StreamlitInterface.UploadFile(FilePath);
+    CALL StreamlitInterface.UploadFile(FilePath);       // Fichier : `Kaadoc/frontend/main.py`
     RETURN FilePath;
 END.
 
----------------------------------------------------------
 
+---------------------------------------------------------
+**Étape 2 : Extraire le texte du fichier via le module d'extraction**
 MODULE ExtractText;
 VAR
     InputFile : FILE;
@@ -132,68 +136,71 @@ VAR
 BEGIN
     // Si le fichier est un PDF
     IF FileType(InputFile) == "PDF" THEN
-        CALL TesseractOCR.ExtractFromPDF(InputFile, ExtractedText);
+        CALL TesseractOCR.ExtractFromPDF(InputFile, ExtractedText); // Fichier : `Kaadoc/backend/process.py`
     ENDIF;
     
     // Si le fichier est une image
     IF FileType(InputFile) == "Image" THEN
-        CALL TesseractOCR.ExtractFromImage(InputFile, ExtractedText);
+        CALL TesseractOCR.ExtractFromImage(InputFile, ExtractedText); // Fichier : `Kaadoc/backend/process.py`
     ENDIF;
 
     RETURN ExtractedText;
 END.
-------------------------------------------------------------------------------------------------
 
+
+------------------------------------------------------------------------------------------------
+**Étape 3 : Sélectionner les informations spécifiques dans le texte extrait**
 MODULE SelectData;
 VAR
     ExtractedText : TEXT;
     SelectedData : TEXT;
 BEGIN
     // Logique de sélection des informations pertinentes
-    CALL DataSelector.SelectFields(ExtractedText, SelectedData, Fields = ["CNI", "Factures", "CV"]);
+    CALL DataSelector.SelectFields(ExtractedText, SelectedData, Fields = ["CNI", "Factures", "CV"]);  // Fichier : `Kaadoc/backend/schema.py`
     RETURN SelectedData;
 END.
 
---------------------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------------------
+**Étape 4 : Convertir les données extraites en format JSON ou CSV**
 MODULE ConvertToJsonOrCsv;
 VAR
     StructuredData : TEXT;
     OutputFile : FILE;
 BEGIN
     // Conversion des données en JSON ou CSV
-    CALL LlamaIndex.ConvertData(StructuredData, Format = "JSON", OutputFile);
+    CALL LlamaIndex.ConvertData(StructuredData, Format = "JSON", OutputFile); // Fichier : `Kaadoc/backend/convert.py`
     RETURN OutputFile;
 END.
 
+
 --------------------------------------------------------------
+**Étape 5 : Exporter les données dans une base de données ou fichier**
 MODULE ExportData;
 VAR
     OutputFile : FILE;
 BEGIN
     // Option 1 : Exporter vers un fichier local
-    CALL FileExporter.SaveToFile(OutputFile, "data/output/");
+    CALL FileExporter.SaveToFile(OutputFile, "Kaadoc/data/output/"); // Fichier : `Kaadoc/backend/export.py`
     
     // Option 2 : Exporter vers une base de données externe
-    CALL DatabaseModule.SaveDataToDatabase(OutputFile);
+    CALL DatabaseModule.SaveDataToDatabase(OutputFile); // Fichier : `Kaadoc/database/db_connector.py`
 END.
 
 
 ------------------------------------------------------------------
-
+**Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe**
 MODULE SaveDataToDatabase;
 VAR
     StructuredData : TEXT;
 BEGIN
     // Sauvegarde des données dans une base de données externe
     IF DatabaseConnection IS PostgreSQL THEN
-        CALL PostgreSQL.SaveData(StructuredData, "table_name");
+        CALL PostgreSQL.SaveData(StructuredData, "table_name");  // Fichier : `Kaadoc/database/db_connector.py`
     ELSE IF DatabaseConnection IS MongoDB THEN
-        CALL MongoDB.SaveData(StructuredData, "collection_name");
+        CALL MongoDB.SaveData(StructuredData, "collection_name");  // Fichier : `Kaadoc/database/db_connector.py`
     ENDIF;
 END.
-
-
 
 
 ---
