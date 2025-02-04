@@ -139,18 +139,8 @@ def main():
     _log.info(
         f"Document converted and multimodal pages generated in {end_time:.2f} seconds."
     )
+# on continue demain
 
-    # This block demonstrates how the file can be opened with the HF datasets library
-    # from datasets import Dataset
-    # from PIL import Image
-    # multimodal_df = pd.read_parquet(output_filename)
-
-    # # Convert pandas DataFrame to Hugging Face Dataset and load bytes into image
-    # dataset = Dataset.from_pandas(multimodal_df)
-    # def transforms(examples):
-    #     examples["image"] = Image.frombytes('RGB', (examples["image.width"], examples["image.height"]), examples["image.bytes"], 'raw')
-    #     return examples
-    # dataset = dataset.map(transforms)
 
 
 if __name__ == "__main__":
