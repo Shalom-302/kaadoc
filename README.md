@@ -76,43 +76,59 @@ Kaadoc/
 ## Déroulement du processus
 
 ```snl
+ALGORITHM Kaadoc_Document_Processing;
+VAR
+    InputFile, ProcessedText, SelectedParts, ConvertedOutput : TEXT;
+    FaissIndex : INDEX;
+    ExtractionResults, GeminiResults : STRUCT;
 BEGIN
-    // Initialiser les modules nécessaires
+    // Étape 0 : Initialisation de l'environnement
     CALL InitializeModules();
-
-    // Étape 1 : Télécharger le fichier via l'interface utilisateur
-    CALL UploadFile(InputFile);
+    CALL LoadConfigurations("config/settings.py");
+    CALL LoadEnvironmentVariables("config/.env");
     
-    // Étape 2 : Extraire le texte du fichier via le module d'extraction
-    CALL ExtractText(InputFile, ExtractedText);
-
-    // Étape 3 : Sélectionner les informations spécifiques dans le texte extrait
-    CALL SelectData(ExtractedText, SelectedData);
+    // Étape 1 : Chargement du document (PDF ou Image)
+    InputFile := CALL UploadFile();   // Par exemple via l'interface Streamlit
     
-    // Étape 4 : Convertir les données extraites en format JSON ou CSV
-    CALL ConvertToJsonOrCsv(SelectedData, OutputFile);
-
-    // Étape 5 : Exporter les données dans une base de données ou fichier
-    CALL ExportData(OutputFile);
+    // Étape 2 : Extraction du texte structuré avec Docling
+    ExtractionResults := CALL Docling.Extract(InputFile);
+        // Docling extrait le texte, la mise en page, et segmente le document.
     
-    // Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe
-    CALL SaveDataToDatabase(SelectedData);
+    // Étape 3 : Indexation des parties extraites avec Faiss
+    FaissIndex := CALL Faiss.BuildIndex(ExtractionResults);
+        // Faiss indexe le contenu pour permettre une recherche par similarité.
+    
+    // Étape 4 : Analyse du document par Gemini via LangChain
+    GeminiResults := CALL Gemini.Analyze(FaissIndex, Query = "Identifier les sections à convertir");
+        // Gemini détermine quelles parties du document sont pertinentes pour la conversion.
+    
+    // Étape 5 : Sélection des parties à convertir
+    SelectedParts := CALL SelectRelevantParts(GeminiResults);
+        // On sélectionne les parties identifiées par Gemini.
+    
+    // Étape 6 : Conversion des parties sélectionnées en code ou format structuré (JSON/CSV)
+    ConvertedOutput := CALL Gemini.Convert(SelectedParts, TargetFormat = "JSON");
+        // Gemini, via LangChain, génère la conversion en utilisant ses capacités LLM.
+    
+    // Étape 7 : Exportation du résultat final
+    CALL ExportOutput(ConvertedOutput, Destination = "data/output/");
+    
+    // Fin du processus
+    OUTPUT ConvertedOutput;
 END.
 
 ---------------------------------------------------------------------------------------
 MODULE InitializeModules;
 BEGIN
-    // Initialisation des modules backend
-    ConversionModule := MODULE("Kaadoc.backend.convert"); // Fichier : `Kaadoc/backend/convert.py`
-    ExtractionModule := MODULE("Kaadoc.backend.process"); // Fichier : `Kaadoc/backend/process.py`
-    ExportModule := MODULE("Kaadoc.backend.export");     // Fichier : `Kaadoc/backend/export.py`
-    DatabaseModule := MODULE("Kaadoc.database.db_connector"); // Fichier : `Kaadoc/database/db_connector.py`
-    
-    // Chargement des configurations
-    CALL LoadConfigurations("Kaadoc/config/settings.py");      // Fichier : `Kaadoc/config/settings.py`
-    CALL LoadEnvironmentVariables("Kaadoc/config/.env");       // Fichier : `Kaadoc/config/.env`
+    // Importer les modules essentiels
+    ConversionModule := MODULE("Kaadoc.backend.convert");      // Conversion des données (convert.py)
+    ExtractionModule := MODULE("Kaadoc.backend.process");        // Extraction du texte (process.py)
+    ExportModule := MODULE("Kaadoc.backend.export");             // Export des données (export.py)
+    DatabaseModule := MODULE("Kaadoc.database.db_connector");    // Connexion BDD (db_connector.py)
+    DoclingModule := MODULE("Docling.Core");                     // Bibliothèque Docling pour l'extraction avancée
+    GeminiModule := MODULE("LangChain.Gemini");                  // Module Gemini via LangChain
+    FaissModule := MODULE("Faiss.Indexer");                      // Module Faiss pour l'indexation
 END.
-
 
 
 ---------------------------------------------------------------
@@ -121,61 +137,70 @@ MODULE UploadFile;
 VAR
     FilePath : STRING;
 BEGIN
-    // L'interface utilisateur permet à l'utilisateur de télécharger le fichier
-    CALL StreamlitInterface.UploadFile(FilePath);       // Fichier : `Kaadoc/frontend/main.py`
+    // Permet à l'utilisateur de télécharger un fichier via l'interface Streamlit
+    CALL StreamlitInterface.UploadFile(FilePath);  // Fichier : Kaadoc/frontend/main.py
     RETURN FilePath;
 END.
 
 
 ---------------------------------------------------------
 **Étape 2 : Extraire le texte du fichier via le module d'extraction**
-MODULE ExtractText;
+MODULE Docling.Extract;
 VAR
     InputFile : FILE;
-    ExtractedText : TEXT;
+    ExtractionResults : STRUCT;
 BEGIN
-    // Si le fichier est un PDF
-    IF FileType(InputFile) == "PDF" THEN
-        CALL TesseractOCR.ExtractFromPDF(InputFile, ExtractedText); // Fichier : `Kaadoc/backend/process.py`
-    ENDIF;
-    
-    // Si le fichier est une image
-    IF FileType(InputFile) == "Image" THEN
-        CALL TesseractOCR.ExtractFromImage(InputFile, ExtractedText); // Fichier : `Kaadoc/backend/process.py`
-    ENDIF;
-
-    RETURN ExtractedText;
+    // Utilisation de Docling pour extraire le texte et la structure du document
+    CALL DoclingModule.ExtractDocument(InputFile, ExtractionResults);
+    RETURN ExtractionResults;
 END.
 
 
 ------------------------------------------------------------------------------------------------
-**Étape 3 : Sélectionner les informations spécifiques dans le texte extrait**
-MODULE SelectData;
+**Étape 3 : Créér une base de données vectorielles à partir des données extraites avec Faiss**
+MODULE Faiss.BuildIndex;
 VAR
-    ExtractedText : TEXT;
-    SelectedData : TEXT;
+    ExtractionResults : STRUCT;
+    Index : INDEX;
 BEGIN
-    // Logique de sélection des informations pertinentes
-    CALL DataSelector.SelectFields(ExtractedText, SelectedData, Fields = ["CNI", "Factures", "CV"]);  // Fichier : `Kaadoc/backend/schema.py`
-    RETURN SelectedData;
+    // Construction d'un index Faiss à partir des résultats d'extraction
+    CALL FaissModule.CreateIndex(ExtractionResults, Index);
+    RETURN Index;
 END.
 
 
 --------------------------------------------------------------------------------------------
-**Étape 4 : Convertir les données extraites en format JSON ou CSV**
-MODULE ConvertToJsonOrCsv;
+**Étape 4 : Analyser le document avec Gemini pour une conversion specifique ou totale**
+MODULE Gemini.Analyze;
 VAR
-    StructuredData : TEXT;
-    OutputFile : FILE;
+    FaissIndex : INDEX;
+    Query : TEXT;
+    AnalysisResults : STRUCT;
+    SelectedParts : TEXT;
+    GeminiResults : STRUCT;
 BEGIN
-    // Conversion des données en JSON ou CSV
-    CALL LlamaIndex.ConvertData(StructuredData, Format = "JSON", OutputFile); // Fichier : `Kaadoc/backend/convert.py`
-    RETURN OutputFile;
+    // Utilisation de Gemini via LangChain pour analyser l'index et identifier les sections pertinentes
+    CALL GeminiModule.AnalyzeIndex(FaissIndex, Query, AnalysisResults);
+    // Sélection des parties pertinentes à convertir basées sur l'analyse de Gemini
+    CALL DataSelector.Filter(GeminiResults, Criteria = "conversion_relevance", SelectedParts);
+    RETURN AnalysisResults;SelectedParts;
+END.
+
+--------------------------------------------------------------
+**Étape 5 : Convertir les données extraites en format JSON ou CSV**
+MODULE Gemini.Convert;
+VAR
+    SelectedParts : TEXT;
+    ConvertedOutput : TEXT;
+BEGIN
+    // Conversion des parties sélectionnées en format JSON ou CSV via Gemini
+    CALL GeminiModule.ConvertToFormat(SelectedParts, TargetFormat = "JSON", ConvertedOutput);
+    RETURN ConvertedOutput;
 END.
 
 
 --------------------------------------------------------------
-**Étape 5 : Exporter les données dans une base de données ou fichier**
+**Étape 6 : Exporter les données dans une base de données ou fichier**
 MODULE ExportData;
 VAR
     OutputFile : FILE;
@@ -189,7 +214,7 @@ END.
 
 
 ------------------------------------------------------------------
-**Étape 6 : Optionnel : Sauvegarder les données dans une base de données externe**
+**Étape 7 : Optionnel : Sauvegarder les données dans une base de données externe**
 MODULE SaveDataToDatabase;
 VAR
     StructuredData : TEXT;
@@ -204,6 +229,35 @@ END.
 
 
 ---
+
+
+Explication du Processus
+
+-Initialisation
+
+Tous les modules nécessaires sont importés et initialisés, y compris Docling pour l'extraction, Gemini via LangChain pour l'analyse/conversion, et Faiss pour l'indexation.
+
+-Téléchargement
+L'utilisateur télécharge un document (PDF, image, etc.) via l'interface Streamlit.
+
+-Extraction
+Docling extrait le contenu du document, y compris la structure (texte, tableaux, etc.).
+
+-Indexation
+Faiss est utilisé pour construire un index à partir des données extraites, facilitant la recherche par similarité.
+
+-Analyse par Gemini
+Gemini examine l'index pour identifier les sections pertinentes qui doivent être converties, selon une requête prédéfinie.
+
+-Sélection
+Les parties identifiées par l'utilisateur sont sélectionnées et filtrées pour la conversion.
+
+-Conversion
+Gemini convertit ces sections sélectionnées en un format structuré (par exemple, JSON).
+
+-Exportation
+Le résultat final est exporté dans le dossier de sortie ou vers une base de données externe.
+
 
 ## 🔥 Technologies Utilisées
 
