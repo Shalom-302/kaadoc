@@ -1,6 +1,7 @@
 # 📌 KaadocV1 - Extraction et Structuration de Données
 
 ## 📖 Description du Projet
+
 **Kaadoc** est une application d'intelligence artificielle générative permettant de convertir des données non structurées (PDF, images, textes, sons, vidéos) en données structurées au format **CSV** ou **JSON**. L'application permet ensuite de **télécharger** les données converties ou de les **intégrer** directement dans une base de données externe.
 
 L'interface est développée avec **Streamlit**, permettant une UX fluide et intuitive. Le backend repose sur **Langchain** et **LlamaIndex** pour l'extraction et la conversion des données.
@@ -57,13 +58,12 @@ Kaadoc/
 │-- README.md             # Documentation du projet
 ```
 
-
-
 # Architecture SNL de KaadocV1 - Extraction et Structuration de Données
 
 ## Algorithme principal : `KaadocV1_Extraction_and_Structuration`
 
 ### Variables
+
 - `InputFile` : Fichier à traiter
 - `ProcessedText` : Texte extrait du fichier
 - `StructuredData` : Données extraites et structurées
@@ -71,7 +71,7 @@ Kaadoc/
 - `OutputFile` : Fichier de sortie (JSON, CSV)
 - `ConversionModule`, `ExtractionModule`, `ExportModule`, `DatabaseModule` : Modules utilisés dans le processus
 
-# Architecture du Processus - SNL
+# #Architecture du Processus - SNL
 
 ## Déroulement du processus
 
@@ -277,11 +277,15 @@ Le résultat final est exporté dans le dossier de sortie ou vers une base de do
    git clone https://gitlab.kaanari.com/training1/kaadoc-rag.git
    cd <repo-folder>
    ```
-2. **Installer les dépendances** :
+
+**2. Installer les dépendances** :
+
    ```bash
    pip install -r requirements.txt
    ```
-3. **Lancer l'application Streamlit** :
+
+ **3. Lancer l'application Streamlit** :
+
    ```bash
    streamlit run main.py
    ```
