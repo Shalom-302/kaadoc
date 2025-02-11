@@ -186,10 +186,7 @@ if uploaded_file:
         # Extraction automatique des infos
             if selectedd_fields:
                 """Infos sélectionnées directement depuis le texte"""
-                embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-                new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-                docs = new_db.similarity_search(selectedd_fields)
-
+              
                 extracted_data = user_input(selectedd_fields)
                 st.subheader("Résultat des données en json")
                 st.json(extracted_data)
