@@ -11,3 +11,5 @@ pytesseract
 docling
 langchain-docling
 watchdog
+langchain-redis
+redis 
