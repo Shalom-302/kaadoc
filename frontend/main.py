@@ -1,4 +1,3 @@
-# image files processed   
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -17,6 +16,10 @@ from PIL import Image
 load_dotenv()
 import google.generativeai as genai
 
+
+# Connexion à Redis
+
+
 apikey = os.getenv("GOOGLE_API_KEY")
 if not apikey:
     st.error("La clé API Google n'a pas été trouvée dans le fichier .env.")
@@ -25,24 +28,19 @@ if not apikey:
 genai.configure(api_key=apikey)
 
 
-st.title("📄 Extraction Automatique d'Informations")
-
-# Étape 1 : Upload du fichier (PDF ou Image)
-uploaded_file = st.file_uploader("📥 Téléchargez un PDF ou une Image", type=["pdf", "png", "jpg", "jpeg"])
-
-# Liste des champs possibles pour extraction
 possible_fields = [
     "documentType", "number", "nationality", "firstName", "lastName",
     "dateOfBirth", "sex", "height", "placeOfBirth", "issueDate",
     "expiryDate", "placeOfIssue"
 ]
 
-# Sélection des champs par l'utilisateur
 selected_fields = st.multiselect(
     "Sélectionnez les informations à extraire :",
     options=possible_fields,
-    default=possible_fields
-)
+    default=possible_fields)
+
+selectedd_fields = ", ".join(selected_fields)
+
 
 def get_pdf_text(pdf_docs):
     """Extrait le texte d'un PDF"""
@@ -68,39 +66,57 @@ def get_vector_store(text_chunks):
 
 def get_selected_infos():
     """Génère un prompt basé sur les infos sélectionnées"""
-    selected_text = ", ".join(selected_fields)
-    context = text_chunks
-    prompt_template = f"""
-    Analyse ce document et extrais uniquement les informations suivantes : {selected_text}.
-    Retourne les résultats sous forme de texte brut avec une structure clé:valeur
-    Si une information n'est pas disponible, mettez simplement "Non trouvé".
+
+ 
+    prompt_template = """     
+    Extraire les informations  de la manière la plus détaillée possible à partir du document PDF fourni et des elements selectionnés par l'utilisateur. 
+    Assurez-vous de fournir la reponse sous forme de texte brute et separe les en clé valeur. Si la réponse ne peut pas être déterminée à partir du document PDF,  
+    "Marque seulement non trouvé", sans fournir de réponse incorrecte.
+
     Document PDF fourni : {context}
     \n
-    
+    Question : \n{selected_fields}\n
 
+     Réponse :
     
     """
 
     model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.3)
-    prompt = PromptTemplate(template = prompt_template, input_variables = ["context","selected_text"])
+    prompt = PromptTemplate(template = prompt_template, input_variables = ["context","selected_fields"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
     return chain
 
 
-def extract_selected_info(selected_text):
+def user_input(selectedd_fields):
+    
+
     """Extrait les infos sélectionnées directement depuis le texte"""
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(selected_text)
+    docs = new_db.similarity_search(selectedd_fields)
 
     # Recherche des infos sélectionnées
     selected_chain = get_selected_infos()
-    response = selected_chain.invoke({"input_documents": docs, "question": selected_text})
+    response = selected_chain.invoke({"input_documents": docs, "selected_fields": selectedd_fields})
+    output_text = response.get("output_text", "").strip()
+    formatted_text = "\n".join([f"{line}" for line in output_text.split("\n")])
+    st.subheader("🔍 Résultat brut de l'extraction")
+    st.text(formatted_text)
+    # Transformation en JSON
+    output_json = {}
+    output_text = response.get("output_text", "").strip()  # Récupération sûre du texte
 
-    # Conversion JSON
-    extracted_json = json.loads(response["output_text"])
-    
-    return extracted_json
+    for line in output_text.split("\n"):
+        if ":" in line:  # Vérifier si la ligne contient une clé et une valeur
+            key, value = line.split(":", 1)  # Séparer la clé de la valeur
+            output_json[key.strip()] = value.strip()  # Nettoyage des espaces
+
+     # Retourner l'objet JSON
+    return output_json
+
+
+
+
 
 def extract_info_from_image(uploaded_file, selected_fields):
     """Envoie l'image à Gemini et retourne les informations extraites"""
@@ -127,10 +143,7 @@ def extract_info_from_image(uploaded_file, selected_fields):
         if ":" in line:  # Vérifier si la ligne contient une clé et une valeur
                 key, value = line.split(":", 1)  # Séparer la clé de la valeur
                 output_json[key.strip()] = value.strip()  # Nettoyage des espaces
-
-        # Afficher le JSON structuré
-        st.subheader("Résultat structuré en JSON")
-        st.json(output_json)
+                
     return output_json
 
 
@@ -146,34 +159,57 @@ def save_and_download_json(data):
     with open(json_filename, "rb") as file:
         st.download_button("⬇️ Télécharger", file, file_name=json_filename, mime="application/json")
 
+
+
+st.title("📄 Extraction Automatique d'Informations")
+uploaded_file = st.file_uploader("📥 Téléchargez un PDF ou une Image", type=["pdf", "png", "jpg", "jpeg"])
+
+# Liste des champs possibles pour extraction
+# Sélection des champs par l'utilisateur
+
 if uploaded_file:
     file_type = uploaded_file.type
     
     if "pdf" in file_type:
-        st.subheader("📄 Traitement du PDF en cours...")
+        st.write("pdf file uploaded")
+        if st.button("Process", type="primary"):
+            
+            with st.spinner("📄 Traitement du PDF en cours..."):
         
-        # Extraction du texte
-        extracted_text = get_pdf_text([uploaded_file])
+            # Extraction du texte
+                extracted_text = get_pdf_text([uploaded_file])
 
-        # Découpage en chunks + vectorisation
-        text_chunks = get_text_chunks(extracted_text)
-        get_vector_store(text_chunks)
-
+                # Découpage en chunks + vectorisation
+                text_chunks = get_text_chunks(extracted_text)
+                get_vector_store(text_chunks)
+                st.success("pdf chunked successfully")
         # Extraction automatique des infos
-        if selected_fields:
-            extracted_data = extract_selected_info(extracted_text)
-            st.json(extracted_data)
-            save_and_download_json(extracted_data)
+            if selectedd_fields:
+                """Infos sélectionnées directement depuis le texte"""
+                embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+                new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+                docs = new_db.similarity_search(selectedd_fields)
+
+                extracted_data = user_input(selectedd_fields)
+                st.subheader("Résultat des données en json")
+                st.json(extracted_data)
+                save_and_download_json(extracted_data)
+      
+            
 
     elif "image" in file_type:
         st.image(uploaded_file, caption="Image téléchargée", use_container_width=True)
-        st.subheader("🖼️ Traitement de l'Image en cours...")
+        if st.button("Process", type="primary"):
+            st.subheader("🖼️ Traitement de l'Image en cours...")
+            # Envoi à Gemini pour traitement
+            # Extraction automatique des infos
+            extracted_data = extract_info_from_image(uploaded_file,selected_fields)
         
-        # Envoi à Gemini pour traitement
-        extracted_data = extract_info_from_image(uploaded_file,selected_fields)
-        
-        
-        # Affichage et téléchargement
-        st.json(extracted_data)
-        save_and_download_json(extracted_data)
+            st.subheader("resultat des données en json")
+            # Affichage et téléchargement
+            st.json(extracted_data)
+            save_and_download_json(extracted_data)
+
+
+
 
