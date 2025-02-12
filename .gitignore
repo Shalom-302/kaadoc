@@ -1,5 +1,7 @@
 .env
+.json
+.csv
 .devcontainer
-
+faiss_index/
 .venv/
 __pycache__/
