@@ -29,18 +29,77 @@ if not apikey:
 genai.configure(api_key=apikey)
 
 st.title("📄 Extraction Automatique d'Informations")
-possible_fields = [
-    "documentType", "number", "nationality", "firstName", "lastName",
-    "dateOfBirth", "sex", "height", "placeOfBirth", "issueDate",
-    "expiryDate", "placeOfIssue"
-]
+# Définition des champs pour chaque type de document
+possible_fields = {
+    "Resume": [
+        "ÉDUCATION (diplômes, établissements, années)",
+        "EXPÉRIENCES (postes, entreprises, dates, descriptions)",
+        "COMPÉTENCES (techniques, soft skills)",
+        "LANGUES (langues parlées, niveaux)",
+        "CERTIFICATIONS (certifications obtenues)",
+        "CONTACT (email, téléphone, LinkedIn, etc.)"
+    ],
+    "Drive-Licence": [
+        "documentType",
+        "number",
+        "nationality",
+        "firstName",
+        "lastName",
+        "dateOfBirth",
+        "sex",
+        "height",
+        "placeOfBirth",
+        "issueDate",
+        "expiryDate",
+        "placeOfIssue"
+    ],
+    "ID-Card": [
+        "documentType",
+        "number",
+        "nationality",
+        "firstName",
+        "lastName",
+        "dateOfBirth",
+        "sex",
+        "height",
+        "placeOfBirth",
+        "issueDate",
+        "expiryDate",
+        "placeOfIssue"
+    ],
+    "Invoice": [
+        "en_tete (titre, entreprise, date, client, semaine, opération, produit, site)",
+        "tableau (numero, identifiant, description, valeur, observation)",
+        "total",
+        "pied_de_page (entreprises, magasinier (nom, date), autres_signataires (nom, rôle))"
+    ]
+}
 
-selected_fields = st.multiselect(
-    "Sélectionnez les informations à extraire :",
-    options=possible_fields,
-    default=possible_fields)
+selected_document = st.selectbox("Sélectionnez un type de document", list(possible_fields.keys()))
 
-selectedd_fields = ", ".join(selected_fields)
+
+# Affichage des champs en fonction du type de document choisi
+if selected_document:
+    st.subheader(f"Champs à extraire pour {selected_document}")
+    selected_fields = st.multiselect(
+        "Sélectionnez les informations à extraire :",
+        options=possible_fields[selected_document]
+    )
+
+    # Affichage de la sélection
+    if selected_fields:
+        st.write("Vous avez sélectionné les champs suivants :")
+        st.write(selected_fields)
+
+    selectedd_fields = ", ".join(selected_fields)
+
+
+# selected_fields = st.multiselect(
+#     "Sélectionnez les informations à extraire :",
+#     options=possible_fields,
+#     default=possible_fields)
+
+# selectedd_fields = ", ".join(selected_fields)
 
 
 def get_pdf_text(pdf_docs):
