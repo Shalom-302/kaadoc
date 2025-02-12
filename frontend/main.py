@@ -11,6 +11,7 @@ from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv   
 import os
 import json
+import pandas as pd
 import streamlit as st
 from PIL import Image
 load_dotenv()
@@ -27,7 +28,7 @@ if not apikey:
 
 genai.configure(api_key=apikey)
 
-
+st.title("📄 Extraction Automatique d'Informations")
 possible_fields = [
     "documentType", "number", "nationality", "firstName", "lastName",
     "dateOfBirth", "sex", "height", "placeOfBirth", "issueDate",
@@ -159,54 +160,85 @@ def save_and_download_json(data):
     with open(json_filename, "rb") as file:
         st.download_button("⬇️ Télécharger", file, file_name=json_filename, mime="application/json")
 
+      
 
 
-st.title("📄 Extraction Automatique d'Informations")
 uploaded_file = st.file_uploader("📥 Téléchargez un PDF ou une Image", type=["pdf", "png", "jpg", "jpeg"])
 
-# Liste des champs possibles pour extraction
+    # Liste des champs possibles pour extraction
 # Sélection des champs par l'utilisateur
 
 if uploaded_file:
     file_type = uploaded_file.type
     
     if "pdf" in file_type:
-        st.write("pdf file uploaded")
-        if st.button("Process", type="primary"):
+        st.success("pdf file uploaded")
+        if selectedd_fields:
+            if st.button("convert to json format", type="primary"):
+                
+                with st.spinner("📄 PDF files processing..."):
             
-            with st.spinner("📄 Traitement du PDF en cours..."):
-        
-            # Extraction du texte
-                extracted_text = get_pdf_text([uploaded_file])
+                # Extraction du texte
+                    extracted_text = get_pdf_text([uploaded_file])
 
-                # Découpage en chunks + vectorisation
-                text_chunks = get_text_chunks(extracted_text)
-                get_vector_store(text_chunks)
-                st.success("pdf chunked successfully")
-        # Extraction automatique des infos
-            if selectedd_fields:
-                """Infos sélectionnées directement depuis le texte"""
-              
-                extracted_data = user_input(selectedd_fields)
-                st.subheader("Résultat des données en json")
-                st.json(extracted_data)
-                save_and_download_json(extracted_data)
-      
-            
+                    # Découpage en chunks + vectorisation
+                    text_chunks = get_text_chunks(extracted_text)
+                    get_vector_store(text_chunks)
+                    st.success("pdf chunked successfully")
+                    """Infos sélectionnées directement depuis le texte"""
+                
+                    extracted_data = user_input(selectedd_fields)
+                  
+                    st.subheader("Résultat des données en json")
+                    st.json(extracted_data)
+                    st.success("json data extracted successfully")
+                    save_and_download_json(extracted_data)
+            if st.button("convert to csv format", type="primary"):
+                        with st.spinner("convert to csv format"):
+                            extracted_data = user_input(selectedd_fields)
+                            jsoncsv = extracted_data
+                            df = pd.DataFrame(jsoncsv.items(), columns=["Field", "Value"])
+                            st.subheader("CSV :")
+                            st.write(df)
+                            hey = df.to_csv("fichier.csv" , index=False)
+                            st.success("csv data exported successfully")
+                            st.subheader("📥 Télécharger le fichier CSV :")
+                            json_filename = "fichier.csv"
+                            with open(json_filename, "rb") as file:
+                                st.download_button("⬇️ Télécharger", file, file_name=json_filename, mime="application/json")
+                    
+        
+                
 
     elif "image" in file_type:
         st.image(uploaded_file, caption="Image téléchargée", use_container_width=True)
-        if st.button("Process", type="primary"):
-            st.subheader("🖼️ Traitement de l'Image en cours...")
-            # Envoi à Gemini pour traitement
-            # Extraction automatique des infos
-            extracted_data = extract_info_from_image(uploaded_file,selected_fields)
-        
-            st.subheader("resultat des données en json")
-            # Affichage et téléchargement
-            st.json(extracted_data)
-            save_and_download_json(extracted_data)
-
+        if selected_fields :
+            if st.button("convert to json format", type="primary"):
+                with st.spinner("Processing..."):
+                    # Envoi à Gemini pour traitement
+                    # Extraction automatique des infos
+                    extracted_data = extract_info_from_image(uploaded_file,selected_fields)
+                
+                    st.subheader("resultat des données en json")
+                    # Affichage et téléchargement
+                    st.json(extracted_data)
+                    save_and_download_json(extracted_data)
+            if st.button("convert to csv format", type="primary"):
+                with st.spinner("Processing ..."):
+                    extracted_data = extract_info_from_image(uploaded_file,selected_fields)
+                
+                    jsoncsv = extracted_data
+                    df = pd.DataFrame(jsoncsv.items(), columns=["Field", "Value"])
+                    st.subheader("CSV :")
+                    st.write(df)
+                    hey = df.to_csv("fichier.csv" , index=False)
+                    st.success("csv data exported successfully")
+                    st.subheader("📥 Télécharger le fichier CSV :")
+                    json_filename = "fichier.csv"
+                    with open(json_filename, "rb") as file:
+                        st.download_button("⬇️ Télécharger", file, file_name=json_filename, mime="application/json")
+                    
+                    
 
 
 
