@@ -7,9 +7,4 @@ python-dotenv
 langchain-community
 google-generativeai
 Pillow
-pytesseract
-docling
-langchain-docling
 watchdog
-langchain-redis
-redis 
