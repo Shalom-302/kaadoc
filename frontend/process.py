@@ -156,7 +156,8 @@ def get_selected_check_point_fields(possible_fields):
             # Sélection des champs Employé
             selected_employe_fields = st.multiselect(
                 "Sélectionnez les champs Employé :",
-                options=possible_fields["check-point"]["Employé"]
+                options=possible_fields["check-point"]["Employé"],
+                default=possible_fields["check-point"]["Employé"]
             )
             if selected_employe_fields:
                 selected_fields["Employé"] = selected_employe_fields
@@ -164,21 +165,24 @@ def get_selected_check_point_fields(possible_fields):
             # Sélection des semaines
             selected_shifts = st.multiselect(
                 "Sélectionnez les semaines :",
-                options=list(possible_fields["check-point"]["Horaires"].keys())
+                options=list(possible_fields["check-point"]["Horaires"].keys()),
+                default=list(possible_fields["check-point"]["Horaires"].keys())
             )
 
             horaires_selection = {}
             for shift in selected_shifts:
                 selected_days = st.multiselect(
                     f"Sélectionnez les jours pour {shift} :",
-                    options=possible_fields["check-point"]["Horaires"][shift]
+                    options=possible_fields["check-point"]["Horaires"][shift],
+                    default=possible_fields["check-point"]["Horaires"][shift]
                 )
 
                 day_selection = {}
                 for day in selected_days:
                     selected_hours = st.multiselect(
                         f"Sélectionnez les horaires pour {day} ({shift}) :",
-                        options=["Arrivée", "Départ"]
+                        options=["Arrivée", "Départ"],
+                        default=["Arrivée", "Départ"]
                     )
                     if selected_hours:
                         day_selection[day] = selected_hours
@@ -194,28 +198,7 @@ def get_selected_check_point_fields(possible_fields):
 
 
 selected_fields_str= get_selected_check_point_fields(possible_fields)
-def global_selection(possible_fields):
-    """
-    Fonction globale pour gérer la sélection de champs pour tous les types de documents.
-    """
-    selected_document = st.selectbox("Sélectionnez un type de document", list(possible_fields.keys()))
 
-    selected_fields = {}
-
-    if selected_document:
-        st.subheader(f"Champs à extraire pour {selected_document}")
-
-        # Cas général : Extraction normale des champs
-        if selected_document != "check-point":
-            selected_fields[selected_document] = st.multiselect(
-                "Sélectionnez les informations à extraire :",
-                options=possible_fields[selected_document]
-            )
-        else:
-            # Cas particulier : Check-Point
-            selected_fields["check-point"] = get_selected_check_point_fields(possible_fields)
-
-    return selected_fields
 def extract_info_from_image(uploaded_file, selected_fields_str):
     """Envoie l'image à Gemini et retourne les informations extraites"""
     # Génération dynamique du prompt basé sur les champs sélectionnés
@@ -223,13 +206,13 @@ def extract_info_from_image(uploaded_file, selected_fields_str):
     prompt = f"""
     Analyse ce document et extraits uniquement les informations suivantes : {selected_fields_str}.
     
-    Retourne un **JSON valide**, strictement conforme au format suivant :
+    Retourne un **JSON valide**, strictement conforme au format suivant je rappelle que ce format est juste un exemple tu dois juste te baser sur ça pour repondre :
 
     ```json
     {{
       "Employé": ["Nom"],
       "Horaires": {{
-        "S3": {{
+        "S": {{
           "Lundi": ["Arrivée", "Départ"]
         }}
       }}

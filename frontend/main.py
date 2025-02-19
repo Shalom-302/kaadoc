@@ -40,7 +40,8 @@ if selected_document:
     else:
         selected_fields[selected_document] = st.multiselect(
             "Sélectionnez les informations à extraire :",
-            options=possible_fields[selected_document]
+            options=possible_fields[selected_document],
+            default=possible_fields[selected_document]
         )
 
     st.write("### Champs sélectionnés :")
