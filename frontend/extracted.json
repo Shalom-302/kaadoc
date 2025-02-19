@@ -1,0 +1,63 @@
+{
+    "Resume": [
+        {
+            "ÉDUCATION (diplômes, établissements, années)": [
+                "BTS en Réseaux Informatiques (SEPT 2021)",
+                "Licence en Web Programmation (JULY 2022)"
+            ]
+        },
+        {
+            "EXPÉRIENCES (postes, entreprises, dates, descriptions)": [
+                {
+                    "poste": "Volontaire",
+                    "entreprise": "American Space",
+                    "dates": "Août 2021 - Janvier 2022",
+                    "description": "Assistance et gestion des utilisateurs dans leurs tâches informatiques. Support technique et dépannage des systèmes informatiques."
+                },
+                {
+                    "poste": "Administrateur de la sécurité et du réseau",
+                    "entreprise": "Beryl",
+                    "dates": "Janvier 2022 - Mai 2023",
+                    "description": "Formation en cybersécurité pour les employés. Aide au développement et à la mise en œuvre de protocoles et procédures de cybersécurité."
+                },
+                {
+                    "poste": "Développeur Python (Web et IA)",
+                    "entreprise": "Lemon Africa",
+                    "dates": "Septembre 2023 - Juin 2024",
+                    "description": "Développement d'applications web utilisant Django, intégrant le machine learning et l'IA. Collaboration avec des équipes interfonctionnelles pour concevoir et mettre en œuvre des solutions de données innovantes."
+                }
+            ]
+        },
+        {
+            "COMPÉTENCES (techniques, soft skills)": [
+                "Langages de Programmation: Python",
+                "Développement Web: Django, HTML, CSS, JavaScript",
+                "Science des Données: Machine Learning, Analyse de Données, IA",
+                "Cybersécurité: Sécurité Réseau, Protocoles, Atténuation",
+                "Compétences Interpersonnelles: Résolution de Problèmes, Collaboration en Équipe"
+            ]
+        },
+        {
+            "LANGUES (langues parlées, niveaux)": [
+                {
+                    "langue": "Anglais",
+                    "niveau": "95%"
+                },
+                {
+                    "langue": "Français",
+                    "niveau": "100%"
+                }
+            ]
+        },
+        {
+            "CERTIFICATIONS (certifications obtenues)": []
+        },
+        {
+            "CONTACT (email, téléphone, LinkedIn, etc.)": [
+                "+2250788016204",
+                "shalomtehe219@gmail.com",
+                "cocody angre, Abidjan"
+            ]
+        }
+    ]
+}

@@ -204,9 +204,10 @@ def extract_info_from_image(uploaded_file, selected_fields_str):
     # Génération dynamique du prompt basé sur les champs sélectionnés
     
     prompt = f"""
-    Analyse ce document et extraits uniquement les informations suivantes : {selected_fields_str}.
+    Analyse ce document et extraits uniquement les informations suivantes {possible_fields} ou {selected_fields_str} en fonction de la selection du user .
     
-    Retourne un **JSON valide**, strictement conforme au format suivant je rappelle que ce format est juste un exemple tu dois juste te baser sur ça pour repondre :
+    Retourne un **JSON valide**, strictement conforme au format suivant toujours en fonction de la selection du user. 
+    je rappelle que ce format est juste un exemple tu dois juste te baser sur ça pour repondre :
 
     ```json
     {{
@@ -218,6 +219,16 @@ def extract_info_from_image(uploaded_file, selected_fields_str):
       }}
     }}
     ```
+    ```json 
+    {{
+        "Resume":[
+        "ÉDUCATION (diplômes, établissements, années)"
+        "EXPÉRIENCES (postes, entreprises, dates, descriptions)"
+        "COMPÉTENCES (techniques, soft skills)"
+        "LANGUES (langues parlées, niveaux)"
+        ]
+    }}
+    ```json
     **Rappel :**
 
     **ATTENTION :**  
