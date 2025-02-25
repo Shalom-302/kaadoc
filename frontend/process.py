@@ -89,8 +89,13 @@ def user_input(selectedd_fields):
      # Retourner l'objet JSON
     return output_json
 
+All_json = {}
+
 
 possible_fields = {
+    "All_json":{
+            
+        },
     "Resume": [
         "ÉDUCATION (diplômes, établissements, années)",
         "EXPÉRIENCES (postes, entreprises, dates, descriptions)",
@@ -133,6 +138,80 @@ possible_fields = {
         "total",
         "pied_de_page (entreprises, magasinier (nom, date), autres_signataires (nom, rôle))"
     ],
+    "Work-Schedule": [
+        "AllName",  # Nom complet détecté
+        "schedule",  # Un dictionnaire des jours et horaires
+        "totals"  # Totaux des présences
+    ],
+     "Work-Schedule-1": [
+        "nom et prenom",
+        "client",
+        "week_start",
+        "week_end",
+        "week_label",
+        "product",
+        "task",
+        "site",
+        "schedule_vendredi_date",
+        "schedule_vendredi_day",
+        "schedule_vendredi_night",
+        "schedule_samedi_date",
+        "schedule_samedi_day",
+        "schedule_samedi_night",
+        "schedule_dimanche_date",
+        "schedule_dimanche_day",
+        "schedule_dimanche_night",
+        "schedule_lundi_date",
+        "schedule_lundi_day",
+        "schedule_lundi_night",
+        "schedule_mardi_date",
+        "schedule_mardi_day",
+        "schedule_mardi_night",
+        "schedule_mercredi_date",
+        "schedule_mercredi_day",
+        "schedule_mercredi_night",
+        "schedule_jeudi_date",
+        "schedule_jeudi_day",
+        "schedule_jeudi_night",
+        "total_day",
+        "total_night",
+        "total_hours",
+        "signature_exceliam_responsable",
+        "signature_sea_invest_responsable",
+        "signature_magasinier",
+        "signature_magasinier_date"
+    ],
+     
+      "Work-Schedule-2": {
+        "client": "",
+        "week_start": "",
+        "week_end": "",
+        "week_label": "",
+        "product": "",
+        "task": "",
+        "site": "",
+        "schedule": {
+            "vendredi": {"date": "", "day": "", "night": ""},
+            "samedi": {"date": "", "day": "", "night": ""},
+            "dimanche": {"date": "", "day": "", "night": ""},
+            "lundi": {"date": "", "day": "", "night": ""},
+            "mardi": {"date": "", "day": "", "night": ""},
+            "mercredi": {"date": "", "day": "", "night": ""},
+            "jeudi": {"date": "", "day": "", "night": ""}
+        },
+        "totals": {
+            "total_day": "",
+            "total_night": "",
+            "total_hours": ""
+        },
+        "signatures": {
+            "exceliam_responsable": "",
+            "sea_invest_responsable": "",
+            "magasinier_signature": "",
+            "magasinier_date": ""
+        }
+    },
+     
     "check-point": {
         "Employé": [
             "Nom", 
@@ -146,8 +225,52 @@ possible_fields = {
             "S2": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
             "S3": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
             "S4": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
-        }
+        },
+        "emargement":[],
+        "observation":[]
+        
+        
+    },
+    "check-point-1": {
+        "Employé": [
+            "Nom", 
+            "Prénom",
+            "Client",
+            "Site",
+            "Période"
+        ],
+        "weeks": {
+            "S1": {
+                "L-25": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
+                "M-26": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
+                "M-27": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
+                "J-28": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
+                "V-29": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
+                "S-30": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""}
+            },
+            "S2": {
+                "L-02": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "M-03": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "M-04": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "J-05": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "V-06": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""}
+            },
+            "S3": {
+                "S-07": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "D-08": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
+                "L-09": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""}
+            }
+        },
+        "signatures": {
+            "supervisor": "",
+            "service_manager": "",
+            "hr_supervisor": "",
+            "hr_coordinator": ""
+        },
+        
     }
+    
+    
 }
 
 def get_selected_check_point_fields(possible_fields):
@@ -157,10 +280,13 @@ def get_selected_check_point_fields(possible_fields):
             selected_employe_fields = st.multiselect(
                 "Sélectionnez les champs Employé :",
                 options=possible_fields["check-point"]["Employé"],
+                
                 default=possible_fields["check-point"]["Employé"]
+               
             )
             if selected_employe_fields:
                 selected_fields["Employé"] = selected_employe_fields
+            
 
             # Sélection des semaines
             selected_shifts = st.multiselect(
@@ -181,8 +307,8 @@ def get_selected_check_point_fields(possible_fields):
                 for day in selected_days:
                     selected_hours = st.multiselect(
                         f"Sélectionnez les horaires pour {day} ({shift}) :",
-                        options=["Arrivée", "Départ"],
-                        default=["Arrivée", "Départ"]
+                        options=["Arrivée", "Départ","pause","reprise","emargement","observation"],
+                        default=["Arrivée", "Départ","pause","reprise","emargement","observation"]
                     )
                     if selected_hours:
                         day_selection[day] = selected_hours
@@ -199,41 +325,72 @@ def get_selected_check_point_fields(possible_fields):
 
 selected_fields_str= get_selected_check_point_fields(possible_fields)
 
+
+# def get_selected_check_points_1(possible_fields):
+#             selected_fields = {}
+            
+#             # Sélection des champs Employé
+#             selected_employe_fields = st.multiselect(
+#                 "Sélectionnez les champs Employé :",
+#                 options=possible_fields["check-point-1"]["Employé"],
+#                 default=possible_fields["check-point-1"]["Employé"]
+#             )
+#             if selected_employe_fields:
+#                 selected_fields["Employé"] = selected_employe_fields
+
+#             # Sélection des semaines
+#             selected_shifts = st.multiselect(
+#                 "Sélectionnez les semaines :",
+#                 options=list(possible_fields["check-point-1"]["weeks"].keys()),
+#                 default=list(possible_fields["check-point-1"]["weeks"].keys())
+#             )
+
+#             horaires_selection = {}
+#             for shift in selected_shifts:
+#                 selected_days = st.multiselect(
+#                     f"Sélectionnez les jours pour {shift} :",
+#                     options=possible_fields["check-point-1"]["weeks"][shift],
+#                     default=possible_fields["check-point-1"]["weeks"][shift]
+#                 )
+
+#                 day_selection = {}
+#                 for day in selected_days:
+#                     selected_hours = st.multiselect(
+#                     f"Sélectionnez les horaires pour {day} ({shift}) :",
+#                         options=["arrival", "pause","resume", "departure", "observation"],
+    
+#                         default=["arrival", "pause","resume", "departure", "observation"]
+#                     )
+#                     if selected_hours:
+#                         day_selection[day] = selected_hours
+
+#                 if day_selection:
+#                     horaires_selection[shift] = day_selection
+
+#             if horaires_selection:
+#                 selected_fields["weeks"] = horaires_selection
+            
+#             return selected_fields
+    
+
+# check_point_1 = get_selected_check_points_1(possible_fields)
+
+
 def extract_info_from_image(uploaded_file, selected_fields_str):
     """Envoie l'image à Gemini et retourne les informations extraites"""
     # Génération dynamique du prompt basé sur les champs sélectionnés
     
     prompt = f"""
-    Analyse ce document et extraits uniquement les informations suivantes {possible_fields} ou {selected_fields_str} en fonction de la selection du user .
-    
-    Retourne un **JSON valide**, strictement conforme au format suivant toujours en fonction de la selection du user. 
-    je rappelle que ce format est juste un exemple tu dois juste te baser sur ça pour repondre :
+Analyse ce document et extraits uniquement les informations suivantes : {selected_fields_str}.
+Si tous les champs doivent être extraits, structure-les intégralement dans {All_json} en respectant la présentation et l'organisation du document dans l’image.
+verifie aussi les emargements et les observations qui sont en signature manuscrites
+Instructions :
 
-    ```json
-    {{
-      "Employé": ["Nom"],
-      "Horaires": {{
-        "S": {{
-          "Lundi": ["Arrivée", "Départ"]
-        }}
-      }}
-    }}
-    ```
-    ```json 
-    {{
-        "Resume":[
-        "ÉDUCATION (diplômes, établissements, années)"
-        "EXPÉRIENCES (postes, entreprises, dates, descriptions)"
-        "COMPÉTENCES (techniques, soft skills)"
-        "LANGUES (langues parlées, niveaux)"
-        ]
-    }}
-    ```json
-    **Rappel :**
-
-    **ATTENTION :**  
-    - Ne retourne que du JSON pur, sans texte supplémentaire.
-    - Assure-toi que les clés et valeurs soient bien formatées.
+Génére un JSON strictement valide, fidèle à la structure des données présentes dans l’image.
+Ne laisse aucune donnée de côté : tous les employés et toutes les informations doivent être capturés.
+Respecte scrupuleusement la hiérarchie et le format des clés et valeurs visibles dans l’image.
+Aucun texte en dehors du JSON : ne retourne que le JSON brut.
+Si des valeurs sont absentes ou illisibles, conserve la structure avec des valeurs vides ("" ou null).
     """
 
 
