@@ -225,51 +225,11 @@ possible_fields = {
             "S2": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
             "S3": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
             "S4": ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]
-        },
-        "emargement":[],
-        "observation":[]
+        }
         
-        
-    },
-    "check-point-1": {
-        "Employé": [
-            "Nom", 
-            "Prénom",
-            "Client",
-            "Site",
-            "Période"
-        ],
-        "weeks": {
-            "S1": {
-                "L-25": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
-                "M-26": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
-                "M-27": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
-                "J-28": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
-                "V-29": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""},
-                "S-30": {"arrivée": "", "pause": "", "reprise": "", "depart": "", "emargement": "", "observation": ""}
-            },
-            "S2": {
-                "L-02": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "M-03": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "M-04": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "J-05": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "V-06": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""}
-            },
-            "S3": {
-                "S-07": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "D-08": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""},
-                "L-09": {"arrivée": "", "pause": "", "reprise": "", "departure": "", "emargement": "", "observation": ""}
-            }
-        },
-        "signatures": {
-            "supervisor": "",
-            "service_manager": "",
-            "hr_supervisor": "",
-            "hr_coordinator": ""
-        },
         
     }
-    
+  
     
 }
 

@@ -1,377 +1,179 @@
 {
-    "Employé": [
-        {
-            "Nom": "BEDE",
-            "Prénom": "DIDIER",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "FALLET",
-            "Prénom": "ERIC",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "DOU",
-            "Prénom": null,
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KELY",
-            "Prénom": "ARSENE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KOFFI",
-            "Prénom": "KONAN JEAN",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "DAGNIICHE",
-            "Prénom": "MARIUS",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "TAPE",
-            "Prénom": "PUZITO LIONEL",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "OUDOU",
-            "Prénom": "GBEULY YANNICK",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "SERI",
-            "Prénom": "BOSSIEHI HYPOLITTE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "ZABLE",
-            "Prénom": "KEIPO HERVE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "YAZE",
-            "Prénom": "PODE SABINE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "BOHOUSSOU",
-            "Prénom": "BROU FREDERIC",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "GARBAQUAN",
-            "Prénom": "GNOTOGNON JOCELYN",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "SERI",
-            "Prénom": "ELLIE JUNIOR",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "FALLE",
-            "Prénom": "ZEZE STEVEN",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KOFFI",
-            "Prénom": "KOUAKOU NOEL",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "SERY",
-            "Prénom": "CASIMIR",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "DIBI",
-            "Prénom": "KOUAME LEON",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "YEBLE",
-            "Prénom": "SEHI SERGE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KORAI",
-            "Prénom": "GUY EVRARD",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KIEROU",
-            "Prénom": "ZOBO MARIUS",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KOFFI",
-            "Prénom": "AFFOUE DEBORA",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "SAVADOGO",
-            "Prénom": "ABDOULAYE",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "DOSSO",
-            "Prénom": "TIA GEORGES",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "TAPE",
-            "Prénom": "FREBO RUPHIN",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "AMANI",
-            "Prénom": "DEYNIOUAH",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "GALEBAWAN",
-            "Prénom": "GOURANIMI DENIS",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "KOUAME",
-            "Prénom": "KOUAME JEAN FERDINAND",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        },
-        {
-            "Nom": "TETE",
-            "Prénom": "SERI",
-            "Client": "EPC CI",
-            "Site": "TIETTO",
-            "Période": "Janvier 2025"
-        }
-    ],
+    "Employé": {
+        "Nom": "DOSSO",
+        "Prénom": "CELINE",
+        "Client": "MODELIS / SODECI",
+        "Site": "DR ABOBO",
+        "Période": "01 AVRIL AU 30 AVRIL 2024"
+    },
     "Horaires": {
         "S1": {
-            "Lundi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mardi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mercredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Jeudi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Vendredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ]
+            "Lundi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mardi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mercredi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Jeudi": {
+                "Arrivée": "7H30",
+                "Départ": "15H50",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Vendredi": {
+                "Arrivée": "7H30",
+                "Départ": "14H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            }
         },
         "S2": {
-            "Lundi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mardi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mercredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Jeudi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Vendredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ]
+            "Lundi": {
+                "Arrivée": null,
+                "Départ": "16H00",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mardi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mercredi": {
+                "Arrivée": "7H30",
+                "Départ": "16H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Jeudi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Vendredi": {
+                "Arrivée": "7H30",
+                "Départ": "14H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            }
         },
         "S3": {
-            "Lundi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mardi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mercredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Jeudi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Vendredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ]
+            "Lundi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mardi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mercredi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Jeudi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Vendredi": {
+                "Arrivée": "7H30",
+                "Départ": "14H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            }
         },
         "S4": {
-            "Lundi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mardi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Mercredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Jeudi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ],
-            "Vendredi": [
-                "",
-                "",
-                "",
-                "",
-                "",
-                ""
-            ]
+            "Lundi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mardi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Mercredi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Jeudi": {
+                "Arrivée": "7H30",
+                "Départ": "15H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            },
+            "Vendredi": {
+                "Arrivée": "7H30",
+                "Départ": "14H30",
+                "pause": null,
+                "reprise": null,
+                "emargement": "signature illisible",
+                "observation": null
+            }
         }
     }
 }
